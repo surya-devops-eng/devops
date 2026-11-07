@@ -1,0 +1,6 @@
+apiVersion: v2
+name: day9-app
+description: Helm Chart for Day 9 Kubernetes Ingress and HPA Practice
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
