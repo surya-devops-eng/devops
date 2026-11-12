@@ -1,0 +1,47 @@
+name: Terraform CI/CD Validation
+
+on:
+  pull_request:
+    paths:
+      - 'labs/day14_practice/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'labs/day14_practice/**'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: labs/day14_practice
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Run Native Terraform Unit Tests
+        run: terraform test -verbose
+
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color
